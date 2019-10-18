@@ -1,0 +1,45 @@
+import matplotlib.pyplot as plt
+import numpy as np
+date=np.genfromtxt("data.csv",delimiter=",")
+x_date=date[:,0]
+y_date=date[:,1]
+plt.figure()
+#最小二乘法，根据k，b的值，计算所有x，y误差
+def computer_error(k,b,x_date,y_date):
+    i=0
+    err=0
+    for i in range(0,len(x_date)):
+        err+=pow(y_date[i]-(k*x_date[i]+b),2)
+    err=err/(float(len(x_date))*2)
+    return err
+def gradient_descent_runner(x_date,y_date,b,k,lr,epoches):
+    m=float(len(x_date))
+    for i in range(0,epoches):
+        b_grid=0
+        k_grid=0
+        for j in range(0,len(x_date)):
+            k_grid+=(1/m)*(((x_date[j]*k)+b)-y_date[j])
+            b_grid+=(1/m)*x_date[j]*(((x_date[j]*k)+b)-y_date[j])
+        b=b-(lr*b_grid)
+        k=k-(lr*k_grid)
+        if (i%100)==0:
+            print(i,"次迭代","斜率",k,"截距",b)
+            plt.scatter(x_date,y_date,c="b")
+            plt.plot(x_date,k*x_date+b,c="r")
+            plt.show()
+    return k,b
+#定义初始学习率，斜率，截距
+lr=0.0001
+b=0
+k=0
+epoches=500
+print("初始斜率k=",k,"初始截距b=",b,"初始误差值为：error=",computer_error(k,b,x_date,y_date))
+print("running。。。。。")
+k,b=gradient_descent_runner(x_date,y_date,b,k,lr,epoches)
+print("done。。。。。")
+print("斜率k=",k,"截距b=",b,"误差值为：error=",computer_error(k,b,x_date,y_date))
+plt.scatter(x_date,y_date,c="b")
+plt.plot(x_date,k*x_date+b,c="r")
+plt.show()
+
+        
